@@ -6,20 +6,15 @@ const middlewares = jsonServer.defaults();
 server.use(middlewares);
 
 server.use((req, res, next) => {
-    console.log(`Request: ${req.method} ${req.url}`);
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', '*');
+    if (req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH');
+        return res.status(200).json({});
+    }
     next();
 });
 
 server.use(router);
-
-// Global error handler
-server.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something went wrong!');
-});
-
-server.listen(3000, () => {
-    console.log('JSON Server is running');
-});
 
 module.exports = server;
